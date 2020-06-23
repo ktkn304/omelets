@@ -32,7 +32,10 @@ export class TypescriptEditorComponent extends React.Component<Props> {
     componentDidMount() {
         if (this.element != null) {
             this.editor = Monaco.editor.create(this.element, {
-                language: 'typescript'
+                language: 'typescript',
+                minimap: {
+                    enabled: false
+                }
             });
             this.disposables.push(this.editor.onDidChangeModelContent(this.onDidChangeModelContent));
         }
