@@ -43,5 +43,5 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.tsx', '.jsx', '.css', '.ttf']
     },
-    devtool: 'source-map' // chrome extensionのオプションページはevalが許可されないため、ソースマップを使用する。
+    devtool: 'inline-source-map' // chrome extensionのオプションページはevalが許可されないため、ソースマップを使用する。
 }
