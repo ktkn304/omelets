@@ -12,37 +12,43 @@ export function PopupRootComponent(props: {}) {
         display: 'flex',
         flexDirection: 'column'
     };
-    const onClickLaunch = async () => {
+    const getBookmarkletUri = async (): Promise<string> => {
         if (editor == null) {
-            return;
+            return '';
         }
         const output = await editor.getJSCode();
         if (output == null) {
-            return ;
+            return '';
+        }
+        const code = output.outputFiles[0].text;
+        const result = Babel.transform(code, { presets: [babel_preset_minify] });
+        if (result == null || result.code == null) {
+            return '';
+        }
+        return `javascript:${result.code}`;
+    }
+
+    const onClickLaunch = async () => {
+        const uri = await getBookmarkletUri();
+        if (uri.length === 0) {
+            return;
         }
 
-        chrome.tabs.executeScript({ code: output.outputFiles[0].text }, () => {
+        const b64 = btoa(uri);
+        chrome.tabs.executeScript({ code: `(() => { const uri = atob('${b64}'); window.location.href = uri; })()` }, () => {
             console.log('done.');
         });
     };
 
     const onClickBuildCopy = async () => {
-        if (editor == null) {
-            return;
-        }
-        const output = await editor.getJSCode();
-        if (output == null) {
-            return;
-        }
-        const code = output.outputFiles[0].text;
-        const result = Babel.transform(code, { presets: [babel_preset_minify] });
-        if (result == null) {
+        const uri = await getBookmarkletUri();
+        if (uri.length === 0) {
             return;
         }
         // TODO: 編集画面を出したい
         chrome.bookmarks.create({
             title: 'bookmarklet',
-            url: `javascript: ${result.code}`
+            url: uri
         });
     };
 
