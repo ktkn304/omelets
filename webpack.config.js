@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     mode: 'development',
@@ -38,7 +39,8 @@ module.exports = {
         }),
         new MonacoWebpackPlugin({
             languages: [ 'typescript' ]
-        })
+        }),
+        new webpack.IgnorePlugin(/^fs$/) // Babelでエラーになるので、無視する。
     ],
     resolve: {
         extensions: ['.ts', '.js', '.tsx', '.jsx', '.css', '.ttf']
