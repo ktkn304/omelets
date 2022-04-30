@@ -27,6 +27,11 @@ module.exports = {
             {
                 test: /\.ttf$/,
                 use: ['file-loader']
+            },
+            {
+                test: /\.mjsx?$/,
+                include: /node_modules/,
+                type: 'javascript/auto',
             }
         ]
     },
