@@ -45,10 +45,17 @@ module.exports = {
         new MonacoWebpackPlugin({
             languages: [ 'typescript' ]
         }),
-        new webpack.IgnorePlugin(/^fs$/) // Babelでエラーになるので、無視する。
+        new webpack.IgnorePlugin({
+            resourceRegExp: /^fs$/
+        }) // Babelでエラーになるので、無視する。
     ],
     resolve: {
-        extensions: ['.ts', '.js', '.tsx', '.jsx', '.css', '.ttf']
+        extensions: ['.ts', '.js', '.tsx', '.jsx', '.css', '.ttf'],
+        fallback: {
+            "path": require.resolve("path-browserify"),
+            "buffer": require.resolve("buffer/"),
+            "assert": require.resolve("assert/"),
+        },
     },
     devtool: 'inline-source-map' // chrome extensionのオプションページはevalが許可されないため、ソースマップを使用する。
 }
