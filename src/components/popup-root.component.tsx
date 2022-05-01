@@ -28,16 +28,33 @@ export function PopupRootComponent(props: {}) {
         return `javascript:${result.code}`;
     }
 
+    const getCurrentTab = async (): Promise<chrome.tabs.Tab> => {
+        let queryOptions = { active: true, currentWindow: true };
+        let [tab] = await chrome.tabs.query(queryOptions);
+        return tab;
+      }
+
     const onClickLaunch = async () => {
         const uri = await getBookmarkletUri();
         if (uri.length === 0) {
             return;
         }
 
-        const b64 = btoa(uri);
-        chrome.tabs.executeScript({ code: `(() => { const uri = atob('${b64}'); window.location.href = uri; })()` }, () => {
-            console.log('done.');
-        });
+        const tab = await getCurrentTab();
+        chrome.tabs.update(tab.id || 0, {
+                url: uri
+            }, () => {
+                console.log('executed.');
+            });
+        /*
+        chrome.scripting.executeScript({
+                target: { tabId: tab.id || 0 },
+                func: (uri: string) => { window.location.href = uri; },
+                args: [uri]
+            }, () => {
+                console.log('done.');
+            });
+            */
     };
 
     const onClickBuildCopy = async () => {
