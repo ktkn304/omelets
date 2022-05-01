@@ -45,6 +45,10 @@ module.exports = {
         new MonacoWebpackPlugin({
             languages: [ 'typescript' ]
         }),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+            Buffer: ['buffer', 'Buffer'],
+        }),
         new webpack.IgnorePlugin({
             resourceRegExp: /^fs$/
         }) // Babelでエラーになるので、無視する。
